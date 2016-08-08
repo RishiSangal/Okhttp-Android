@@ -1,5 +1,7 @@
 package rishi.okhttp.wrapper;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 
 import java.io.IOException;
@@ -21,8 +23,12 @@ public class CallSCMApi {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
     OkHttpClient client;
+    ConnectionDetector connection;
+    Context context;
+    ProgressDialog progress;
 
-    public CallSCMApi(){
+    public CallSCMApi(Context activity){
+        context = activity;
         client = new OkHttpClient();
     }
 
@@ -55,16 +61,29 @@ public class CallSCMApi {
         this.response = response;
     }
 
+    public void showDailoge(String title, String message) {
+        progress.show(context, title, message, true, false);
+    }
+
+    public void dismissDialoge(){
+        progress.dismiss();
+    }
     public class runApiTask extends AsyncTask<Void, Void, Void> {
         Response apiResponse;
         @Override
         protected Void doInBackground(Void... voids) {
             try {
+                connection = new ConnectionDetector(context);
+                if (!connection.isConnectingToInternet()) {
+                    response.noInternetConnection();
+                    return null;
+                }
                 apiResponse = client.newCall(request.build()).execute();
                 if (apiResponse.isSuccessful())
                     response.getResponse(apiResponse.body().string());
                 else
                     response.getErrorResponse(apiResponse.code(), apiResponse.body().string() );
+                dismissDialoge();
             } catch (IOException e) {
                 e.printStackTrace();
             }

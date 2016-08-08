@@ -1,5 +1,8 @@
 package rishi.okhttp.wrapper;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,10 +28,12 @@ public final class CreateRequestApi {
     CallSCMApi scmApi;
     Headers.Builder headerBuilder;
     MediaMultipartBulider mediaMultipartBulider;
-    boolean isJson;
+    private boolean isJson;
     String jsonToPost;
+    Context activity;
     enum REQUEST_TYPE {GET, POST};
     REQUEST_TYPE requestedApiType;
+    ApiIterfaces.GetResponse responseObject;
 
     /// Constructer to initalize Objects
     private CreateRequestApi(CreateBuilder createBuilder, ApiIterfaces.GetResponse response1){
@@ -37,16 +42,23 @@ public final class CreateRequestApi {
         headerBuilder = createBuilder.headers;
         this.isJson = createBuilder.isJson;
         this.jsonToPost = createBuilder.jsonToPost;
-        scmApi = new CallSCMApi();
-        setInterface(response1);
+        this.activity = createBuilder.activity;
+        responseObject = response1;
+        createApiToCall();
     }
 
     public CreateRequestApi(MediaMultipartBulider mediaMultipartBulider, ApiIterfaces.GetResponse response1) {
         this.mediaMultipartBulider = mediaMultipartBulider;
         requestedApiType = REQUEST_TYPE.POST;
         headerBuilder = mediaMultipartBulider.headers;
-        scmApi = new CallSCMApi();
-        setInterface(response1);
+        this.activity = mediaMultipartBulider.activity;
+        responseObject = response1;
+        createApiToCall();
+    }
+
+    private void createApiToCall() {
+        scmApi = new CallSCMApi(activity);
+        setInterface(responseObject);
     }
 
     // To Return The object
@@ -120,10 +132,12 @@ public final class CreateRequestApi {
         Headers.Builder headers;
         boolean isJson;
         String jsonToPost;
+        Context activity;
 
-        public CreateBuilder(){
+        public CreateBuilder(Context mainActivity){
             params = new LinkedHashMap<>();
             headers = new Headers.Builder();
+            activity = mainActivity;
         }
 
         public CreateBuilder addRequestType(REQUEST_TYPE request_type){
@@ -155,17 +169,20 @@ public final class CreateRequestApi {
         public CreateRequestApi build(ApiIterfaces.GetResponse response1) {
             return new CreateRequestApi(this, response1);
         }
+
     }
 
     public static class MediaMultipartBulider{
 
         MultipartBody.Builder mediaFileBuilder;
         Headers.Builder headers;
+        Context activity;
 
-        public MediaMultipartBulider(){
+        public MediaMultipartBulider(Context activity){
             mediaFileBuilder = new MultipartBody.Builder();
             mediaFileBuilder.setType(MultipartBody.FORM);
             headers = new Headers.Builder();
+            this.activity = activity;
         }
 
         public MediaMultipartBulider addHeader(String key, String value){
@@ -193,5 +210,16 @@ public final class CreateRequestApi {
         public CreateRequestApi build(ApiIterfaces.GetResponse response1) {
             return new CreateRequestApi(this, response1);
         }
+    }
+
+    public void showDialog() {
+        showDialog("Loading please wait");
+    }
+    public void showDialog(String message) {
+        showDialog(null, message);
+    }
+
+    public void showDialog(String title, String message) {
+        scmApi.showDailoge(title, message);
     }
 }

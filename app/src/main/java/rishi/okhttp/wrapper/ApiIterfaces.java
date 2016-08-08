@@ -9,6 +9,6 @@ public class ApiIterfaces {
     public interface GetResponse{
         void getResponse(String response);
         void getErrorResponse(int code, String errorResponse);
+        void noInternetConnection();
     }
-
 }
