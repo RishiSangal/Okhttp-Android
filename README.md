@@ -38,6 +38,15 @@ Add the json object to this parameter.
                 .build(response);
 ```
 
+# Send Media Files
+
+```java
+                    createRequestApi = new CreateRequestApi.MediaMultipartBulider(MainActivity.this)
+                    .addHeader("","")
+                    .addMultipartImageFile("key", "fileName", "filePath")
+                    .addMultipartVideoFile("key", "fileName", "filePath")
+                    .build(response);
+```
 ### Show Progress Dialog
 
 This library support the progress dialoge so that you don't have to define it in your code. You can use any of the method as per your requirment. (This is initalized after calling the build method)
