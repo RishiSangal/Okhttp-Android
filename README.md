@@ -1,6 +1,6 @@
 # OkhttpWrapper
 
-This is a wrapper Library which can be used to call apis with the help of okhttp.
+This is a android Library which works as a wrapper on okhttp and used to call apis with the help of okhttp.
 
 ```java
 CreateRequestApi createRequestApi = new CreateRequestApi.CreateBuilder(MainActivity.this)
