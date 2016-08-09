@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import okhttp3.FormBody;
 import okhttp3.Headers;
@@ -25,11 +26,12 @@ public class CallSCMApi {
     OkHttpClient client;
     ConnectionDetector connection;
     Context context;
-    ProgressDialog progress;
+    Vector<ProgressDialog> progress;
 
     public CallSCMApi(Context activity){
         context = activity;
         client = new OkHttpClient();
+        progress = new Vector<>();
     }
 
     Request.Builder request;
@@ -62,12 +64,15 @@ public class CallSCMApi {
     }
 
     public void showDailoge(String title, String message) {
-        progress.show(context, title, message, true, false);
+            progress.add(ProgressDialog.show(context, title, message, true, false));
     }
 
-    public void dismissDialoge(){
-        progress.dismiss();
+    public void dismissDialog() {
+        if (progress != null)
+            for (ProgressDialog prog : progress)
+                prog.dismiss();
     }
+
     public class runApiTask extends AsyncTask<Void, Void, Void> {
         Response apiResponse;
         @Override
@@ -79,11 +84,11 @@ public class CallSCMApi {
                     return null;
                 }
                 apiResponse = client.newCall(request.build()).execute();
+                dismissDialog();
                 if (apiResponse.isSuccessful())
                     response.getResponse(apiResponse.body().string());
                 else
                     response.getErrorResponse(apiResponse.code(), apiResponse.body().string() );
-                dismissDialoge();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,6 +1,5 @@
 package rishi.okhttp.wrapper;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 
 import org.json.JSONException;
@@ -31,9 +30,13 @@ public final class CreateRequestApi {
     private boolean isJson;
     String jsonToPost;
     Context activity;
-    enum REQUEST_TYPE {GET, POST};
+    public enum REQUEST_TYPE {GET, POST};
     REQUEST_TYPE requestedApiType;
     ApiIterfaces.GetResponse responseObject;
+
+    private CreateRequestApi(){
+
+    }
 
     /// Constructer to initalize Objects
     private CreateRequestApi(CreateBuilder createBuilder, ApiIterfaces.GetResponse response1){
@@ -47,7 +50,7 @@ public final class CreateRequestApi {
         createApiToCall();
     }
 
-    public CreateRequestApi(MediaMultipartBulider mediaMultipartBulider, ApiIterfaces.GetResponse response1) {
+    private CreateRequestApi(MediaMultipartBulider mediaMultipartBulider, ApiIterfaces.GetResponse response1) {
         this.mediaMultipartBulider = mediaMultipartBulider;
         requestedApiType = REQUEST_TYPE.POST;
         headerBuilder = mediaMultipartBulider.headers;
@@ -62,19 +65,19 @@ public final class CreateRequestApi {
     }
 
     // To Return The object
-    public JSONObject getJsonToSend(){
-        object = new JSONObject();
-        if (params != null && !params.isEmpty()) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                try {
-                    object.put(entry.getKey(),entry.getValue());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return object;
-    }
+//    public JSONObject getJsonToSend(){
+//        object = new JSONObject();
+//        if (params != null && !params.isEmpty()) {
+//            for (Map.Entry<String, String> entry : params.entrySet()) {
+//                try {
+//                    object.put(entry.getKey(),entry.getValue());
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return object;
+//    }
 
     // called if we have anyother value to Json object
     public void runApi(String url) {
@@ -111,7 +114,7 @@ public final class CreateRequestApi {
         return builder.build();
     }
 
-    public HttpUrl getUrlWithParameters(String url){
+    private HttpUrl getUrlWithParameters(String url){
         HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
         if (params != null && !params.isEmpty()) {
             for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -155,13 +158,15 @@ public final class CreateRequestApi {
             return this;
         }
 
-        public CreateBuilder addJsonParam(String key, JSONObject json){
+//        public CreateBuilder addJsonParam(String key, JSONObject json){
+//            if (!isJson)
+//                isJson = true;
+//            params.put(key, json.toString());
+//            return this;
+//        }
+        public CreateBuilder addJsonForPostApi(JSONObject object){
             if (!isJson)
                 isJson = true;
-            params.put(key, json.toString());
-            return this;
-        }
-        public CreateBuilder addJsonForPostApi(JSONObject object){
             jsonToPost = object.toString();
             return this;
         }
@@ -216,7 +221,7 @@ public final class CreateRequestApi {
         showDialog("Loading please wait");
     }
     public void showDialog(String message) {
-        showDialog(null, message);
+        showDialog("", message);
     }
 
     public void showDialog(String title, String message) {

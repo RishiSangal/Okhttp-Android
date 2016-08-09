@@ -1,9 +1,9 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 ext {
     PUBLISH_GROUP_ID = 'rishi.okhttp.wrapper'
     PUBLISH_ARTIFACT_ID = 'okhttp-wrapper'
-    PUBLISH_VERSION = '1.0'
+    PUBLISH_VERSION = '1.3'
 }
 
 android {
@@ -11,7 +11,7 @@ android {
     buildToolsVersion "24.0.1"
 
     defaultConfig {
-        applicationId "rishi.okhttp.wrapper"
+//        applicationId "rishi.okhttp.wrapper"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
