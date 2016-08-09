@@ -64,21 +64,6 @@ public final class CreateRequestApi {
         setInterface(responseObject);
     }
 
-    // To Return The object
-//    public JSONObject getJsonToSend(){
-//        object = new JSONObject();
-//        if (params != null && !params.isEmpty()) {
-//            for (Map.Entry<String, String> entry : params.entrySet()) {
-//                try {
-//                    object.put(entry.getKey(),entry.getValue());
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        return object;
-//    }
-
     // called if we have anyother value to Json object
     public void runApi(String url) {
         try {
